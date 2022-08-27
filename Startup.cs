@@ -1,4 +1,6 @@
 using BankAPI.Data;
+using BankAPI.Services;
+using BankAPI.Services.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +33,23 @@ namespace BankAPI
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Path"));
             });
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Bank API",
+                    Version = "v1",
+                    Description = "A Bank API",
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                    {
+                        Name = "Ogbonna Ikenna",
+                        Email = "cindionline@yahoo.com",
+                        Url = new Uri("https://github.com/iksydney/BankAPI")
+                    }
+                });
+            });
             services.AddControllers();
         }
 
@@ -48,6 +67,12 @@ namespace BankAPI
 
             app.UseAuthorization();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                var prefix = string.IsNullOrEmpty(options.RoutePrefix) ? "." : "..";
+                options.SwaggerEndpoint($"{prefix}/swagger/v1/swagger.json", "Bank API");
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
