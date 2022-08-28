@@ -156,7 +156,8 @@ namespace BankAPI.Services.Implementations
             transaction.TransactionDate = DateTime.Now;
             transaction.Narration = $"NEW Transaction FROM SOURCE " +
                 $"{JsonConvert.SerializeObject(transaction.TransactionSourceAmount)} TO DESTINATION => " +
-                $"{JsonConvert.SerializeObject(transaction.TransactionDestinationAccount)} ON {transaction.TransactionDate} TRAN_TYPE =>  {transaction.TransactionType} TRAN_STATUS => {transaction.TransactionStatus}";
+                $"{JsonConvert.SerializeObject(transaction.TransactionDestinationAccount)} ON " +
+                $"{transaction.TransactionDate} TRAN_TYPE =>  {transaction.TransactionType} TRAN_STATUS => {transaction.TransactionStatus}";
 
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
