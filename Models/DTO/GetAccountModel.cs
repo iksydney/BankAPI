@@ -6,7 +6,7 @@ namespace BankAPI.Models.DTO
     public class GetAccountModel
     {
         [Key]
-        public int AccountId { get; set; }
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string AccountName { get; set; }

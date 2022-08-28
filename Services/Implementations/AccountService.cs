@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace BankAPI.Services.Implementations
 {
@@ -40,7 +41,7 @@ namespace BankAPI.Services.Implementations
             return true;
         }
 
-        public Account Create(Account account, string Pin, string ConfirmPin)
+        public async Task<Account> Create(Account account, string Pin, string ConfirmPin)
         {
             if (_dbcontext.Accounts.Any(open => open.Email == account.Email))
                 throw new ApplicationException("An account already exists with this account");
@@ -53,7 +54,7 @@ namespace BankAPI.Services.Implementations
             account.PinHash = pinHash;
             account.PinSalt = pinSalt;
             _dbcontext.Accounts.Add(account);
-            _dbcontext.SaveChangesAsync();
+            await _dbcontext.SaveChangesAsync();
 
             return account;
         }
@@ -91,7 +92,7 @@ namespace BankAPI.Services.Implementations
 
         public Account GetById(int id)
         {
-            var account = _dbcontext.Accounts.Where(x => x.AccountId == id).FirstOrDefault();
+            var account = _dbcontext.Accounts.Where(x => x.Id == id).FirstOrDefault();
             if (account == null)
                 return null;
             return account;
@@ -99,7 +100,7 @@ namespace BankAPI.Services.Implementations
 
         public void Update(Account account, string Pin = null)
         {
-            var accountTobeUpdated = _dbcontext.Accounts.Where(x => x.Email == account.Email).SingleOrDefault();
+            var accountTobeUpdated = _dbcontext.Accounts.Where(x => x.Id == account.Id).SingleOrDefault();
             if (accountTobeUpdated == null)
                 throw new ApplicationException("Account doesnt Exist");
             if(!string.IsNullOrWhiteSpace(account.Email))

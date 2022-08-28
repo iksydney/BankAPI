@@ -8,7 +8,7 @@ namespace BankAPI.Models
     public class Transaction
     {
         [Key]
-        public int TransactionId { get; set; }
+        public int Id { get; set; }
         public string TransactionUniqueReference { get; set; }
         public decimal TransactionAmount { get; set; }
         public TransStatus TransactionStatus { get; set; }
@@ -23,21 +23,21 @@ namespace BankAPI.Models
         {
             TransactionUniqueReference = $"{Guid.NewGuid().ToString().Replace("-", "").Substring(1, 27)}";
         }
+    }
 
 
 
-        public enum TransStatus
-        {
-            Failed,
-            Success,
-            Error
-        }
+    public enum TransStatus
+    {
+        Failed,
+        Success,
+        Error
+    }
 
-        public enum TransType
-        {
-            Deposit, 
-            Transfer, 
-            Withdrawal
-        }
+    public enum TransType
+    {
+        Deposit,
+        Transfer,
+        Withdrawal
     }
 }

@@ -1,6 +1,8 @@
 using BankAPI.Data;
 using BankAPI.Services;
 using BankAPI.Services.Implementations;
+using BankAPI.Services.Interfaces;
+using BankAPI.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,7 +36,10 @@ namespace BankAPI
                 options.UseSqlServer(Configuration.GetConnectionString("Path"));
             });
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo

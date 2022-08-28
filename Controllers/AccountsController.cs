@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace BankAPI.Controllers
 {
@@ -21,14 +22,14 @@ namespace BankAPI.Controllers
             _mapper = mapper;
         }
         [HttpPost]
-        [Route("register_new_accunt")]
-        public IActionResult RegisterNewAccount([FromBody] RegisterAccountViewModel newAccountModel)
+        [Route("register_new_account")]
+        public async Task<IActionResult> RegisterNewAccount([FromBody] RegisterAccountViewModel newAccountModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(newAccountModel);
 
             var account = _mapper.Map<Account>(newAccountModel);
-            return Ok(_accountService.Create(account, newAccountModel.Pin, newAccountModel.Pin));
+            return Ok(await _accountService.Create(account, newAccountModel.Pin, newAccountModel.Pin));
         }
 
         [HttpGet]
@@ -57,7 +58,7 @@ namespace BankAPI.Controllers
                 return BadRequest("Account number must be 10 digits");
 
             var account = _accountService.GetByAccountNumber(AccountNumber);
-            var cleanedAccountData = _mapper.Map<IList<GetAccountModel>>(account);
+            var cleanedAccountData = _mapper.Map<GetAccountModel>(account);
             return Ok(cleanedAccountData);
         }
 
@@ -70,13 +71,15 @@ namespace BankAPI.Controllers
             return Ok(cleanedData);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("update_account")]
         public IActionResult UpdateAccount([FromBody] UpdateAccountModel updateAccount)
         {
             if(!ModelState.IsValid)
                 return BadRequest(updateAccount);
+            
             var account = _mapper.Map<Account>(updateAccount);
+
             _accountService.Update(account, updateAccount.Pin);
             return Ok();
         }
